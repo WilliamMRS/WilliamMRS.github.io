@@ -30,7 +30,7 @@ function winInit() {
     nyan8 = new NyanCat(-101, randomNumber(600));
     nyan9 = new NyanCat(-10, randomNumber(600));
 
-    nyanspeed = 1;
+    nyanspeed = 10;
 
     nyanLeaderSpeed = nyanspeed * randomNumber(3, 1);
     nyan1speed = nyanspeed * randomNumber(3, 1);
@@ -166,7 +166,20 @@ renderFrame = function(){
         nyan9.flytt(nyan9Speed, 0);
         nyan9.tegn();
 
-        if (nyanLeader.x > 1000) nyanLeader.x = -12;
+        if (nyanLeader.x > 1000) {
+            nyanLeader.x = -12; 
+
+            nyanLeaderSpeed = nyanspeed * randomNumber(3, 1);
+            nyan1speed = nyanspeed * randomNumber(3, 1);
+            nyan2Speed = nyanspeed * randomNumber(3, 1);
+            nyan3Speed = nyanspeed * randomNumber(3, 1);
+            nyan4Speed = nyanspeed * randomNumber(3, 1);
+            nyan5Speed = nyanspeed * randomNumber(3, 1);
+            nyan6Speed = nyanspeed * randomNumber(3, 1);
+            nyan7Speed = nyanspeed * randomNumber(3, 1);
+            nyan8Speed = nyanspeed * randomNumber(3, 1);
+            nyan9Speed = nyanspeed * randomNumber(3, 1);
+        }
         if(nyan1.x > 1000) nyan1.x = -24;
         if(nyan2.x > 1000) nyan2.x = -240;
         if(nyan3.x > 1000) nyan3.x = -112;
