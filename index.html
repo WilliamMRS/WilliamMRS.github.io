@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+    <head>
+		<meta charset="utf-8" />
+		<title> Index </title> 
+		<link rel="stylesheet" type="text/css" href="style.css" />
+		<script src = "index.js"> </script>
+		<script src = "bibliotek/library.js"></script>
+	</head>
+	
+	<body>	
+		<audio id = 'windSound' src="Vedlegg_IT2_V17/sommervind.mp3"></audio>
+		<audio id = 'orkanMusic'src="Resources/orkan.mp3"></audio>
+		<img class = "imgFiles" src="Resources/vindmolleStolpe.png" alt="" id = "vindmolleStolpe">
+		<img class = "imgFiles" src="Resources/vindmolleBlad.png" alt="" id = "vindmolleBlad">
+		<img class = "imgFiles" src="Resources/bjoerkblad.png" alt="" id = "bjoerkblad">
+		<img class = "imgFiles" src="Resources/bjoerkblad1.png" alt="" id = "bjoerkblad1">
+		<img class = "imgFiles" src="Resources/standard_bjoerk.png" alt="" id = "standard_bjoerk">
+
+		<div id = "canvasDIV">
+				<canvas id = "mainCanvas" height = "600px" width = "1000px"></canvas>
+		</div>
+		<div id = "Controls">
+			<button class="btn" onclick = "vindStille();">Stille</button>
+			<button class="btn" onclick = "lettBris();">Lett Bris</button>
+			<button class="btn" onclick = "stivKuling();">Stiv Kuling</button>
+			<p id = "info" class = "info">Stille 0–0.2 m/s</p>
+			<button class = "easteregg" onclick = "superOrkan();">Super Orkan</button>
+		</div>
+
+    </body>
+	
+</html>
