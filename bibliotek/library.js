@@ -51,8 +51,11 @@ Gir et tilfeldig tall innenfor en gitt rekkevidde.
 	maxNumber: max antall .
 	a: Resultatet av et kast.
 */
-function randomNumber(maxNumber) {
-    let a = Math.floor(Math.random() * maxNumber);
+function randomNumber(maxNumber, minNumber) {
+	let a = Math.floor(Math.random() * maxNumber);
+	if(a < minNumber){
+		a = minNumber;
+	}
     return a;
 }
 
