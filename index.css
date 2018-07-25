@@ -1,0 +1,58 @@
+body{
+    margin: 0px;
+    padding: 0px;
+}
+
+#gameWindow{
+    margin: 0px;
+    padding: 0px;
+    z-index: 0;
+    width: 100%;
+    position: absolute;
+}
+
+#gameUI{
+    margin: 0px;
+    padding: 0px;
+    z-index: 0;
+    width: 100%;
+    position: absolute;
+}
+
+#nextWave{
+    margin: 6px;
+    margin-left: 12px;
+    font-size: 18px;
+    border-width: 4px;
+    border-left-color: silver;
+    border-top-color: silver;
+    border-right-color: lightgrey;
+    border-bottom-color: lightgrey;
+    background-color: yellow;
+}
+
+#mainMenu{    
+    margin: 0px;
+    margin-left: auto;
+    margin-right: auto;
+    position: relative;
+    z-index: 1;
+}
+
+.menuButton{
+    padding: 10px;
+    margin-bottom: 12px;
+    border-width: 8px;
+    border-left-color: silver;
+    border-top-color: silver;
+    border-right-color: lightgrey;
+    border-bottom-color: lightgrey;
+    font-size: 26px;
+    display: block;
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+
+    background-color: #E8A83C;
+    color: #1D0D10;
+}

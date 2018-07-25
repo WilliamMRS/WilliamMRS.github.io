@@ -1,284 +1,352 @@
 /*jslint devel: true */
 
-function winInit() {
+/*
+Game design:
 
-    //Canvas handles
-    canvas = document.getElementById("mainCanvas");
-    ctx = canvas.getContext("2d");
+Castle Defense with turrets and units.
+waves of enemies.
 
-    //Load Images
-    vindmolleStolpe = document.getElementById("vindmolleStolpe");
-    vindmolleBlad = document.getElementById("vindmolleBlad");
-    bjoerkblad = document.getElementById("bjoerkblad");
-    bjoerkblad2 = document.getElementById("bjoerkblad1");
-    standard_bjoerk = document.getElementById("standard_bjoerk");
-    info = document.getElementById('info');
-    windSound = document.getElementById('windSound');
-    orkanMusic = document.getElementById('orkanMusic');
-    orkan = false;
+gamemodes:
+start one and one wave.
+survival.
 
-    nyanCat = document.getElementById('nyanCat');
+possible to save games and return to them at a later time.
+get permament upgrades after doing some challenges.
+*/
 
-    nyanLeader = new NyanCat(-12, randomNumber(600));
-    nyan1 = new NyanCat(-120, randomNumber(600));
-    nyan2 = new NyanCat(-24, randomNumber(600));
-    nyan3 = new NyanCat(-240, randomNumber(600));
-    nyan4 = new NyanCat(-112, randomNumber(600));
-    nyan5 = new NyanCat(-340, randomNumber(600));
-    nyan6 = new NyanCat(-230, randomNumber(600));
-    nyan7 = new NyanCat(-218, randomNumber(600));
-    nyan8 = new NyanCat(-101, randomNumber(600));
-    nyan9 = new NyanCat(-10, randomNumber(600));
+/*
 
-    nyanspeed = 10;
+WELCOME BACK!
 
-    nyanLeaderSpeed = nyanspeed * randomNumber(3, 1);
-    nyan1speed = nyanspeed * randomNumber(3, 1);
-    nyan2Speed = nyanspeed * randomNumber(3, 1);
-    nyan3Speed = nyanspeed * randomNumber(3, 1);
-    nyan4Speed = nyanspeed * randomNumber(3, 1);
-    nyan5Speed = nyanspeed * randomNumber(3, 1);
-    nyan6Speed = nyanspeed * randomNumber(3, 1);
-    nyan7Speed = nyanspeed * randomNumber(3, 1);
-    nyan8Speed = nyanspeed * randomNumber(3, 1);
-    nyan9Speed = nyanspeed * randomNumber(3, 1);
+Things to do:
 
-    bladeRotation = 0;
-    windSpeed = 0;
-    setInterval(refreshProgram, 1000/60);
+don't let new wave spawn until this one has died.
+
+Attack, hurt and death animations for zombies1.
+
+Update User Interface.
+
+make castle modular and upgradeable. Build barracks and stuffs.
+
+Start working on being able to buy units yourself that protect the castle. - Barracks.
+
+First units are positioned in front of the castle with somewhere to see amount and health up right. Knights.
+
+Remember to reduce file size of sprites. Over 3GB right now.
+
+add medieval font to menu and UI
+
+create new types of monsters and pre-sets for waves.
+
+Create rewards system for killing monsters. Usable in the shop.
+
+*/
+
+function loadGame() {
+    //sets game-resolution
+    widthRes = 1920;
+    heightRes = 1080;
+    gameHasStarted = false;
+    mX = 0;
+    mY = 0;
+    unitNumber = 0;
+    //gets HTML objects
+    mainContent = document.getElementById("mainContent");
+
+    mainMenu = document.getElementById("mainMenu");
+
+    //loads assets into js
+    loadAssets();
+    loadGameWindow();
+
+    //activates mouse interactivity
+    window.onclick = function (e) {
+        //scales mouse coords to know where on canvas resolution mouse was clicked
+        widthScale = widthRes/gameWindow.getBoundingClientRect().width;
+        heightScale = heightRes/gameWindow.getBoundingClientRect().height;
+        mX = (e.pageX * widthScale).toFixed(0);
+        mY = (e.pageY * heightScale).toFixed(0);
+        click = true;
+
+    };
+    click = false;
+    console.log('game loaded!');
+    console.log("Welcome inspect presser :) The newest version of the project with all its resources is avaliable at github.com/williammrs. Suggestions are welcome!");
+}
+window.onload = loadGame;
+
+loadAssets = function(){
+    //access texture pool (empty)
+    texturePool = document.getElementById('texturePool');
+
+    dagger1Txt = document.getElementById('dagger1');
 }
 
-window.onload = winInit;
+loadGameWindow = function(){
+    gameWindow = document.getElementById("gameWindow");
+    ctx = gameWindow.getContext("2d");
+    gameWindow.height = heightRes;
+    gameWindow.width = widthRes;
+    updateUI();
+    //draws frame
+    drawSquare({ctx: ctx, x: 0, y: 0, height: heightRes, width: widthRes, color: "black",});
+}
 
-    løvblåser = function(power, oscillation){
+updateUI = function(){
+    let gameWindowWidth = gameWindow.getBoundingClientRect().width; //not in use
+    let gameWindowHeight = gameWindow.getBoundingClientRect().height;
+    mainMenu.style.paddingTop =  gameWindowHeight/2 - (mainMenu.getBoundingClientRect().height/2) + 'px';
+}
 
-        blad = {
-            x: 0,
-            y: 0,
-            draw: ctx.drawImage(bjoerkblad,this.x,this.y),
-            draw2: ctx.drawImage(bjoerkblad1,this.x,this.y)
+createID = function(){ //creates an unique ID for units. Useful for texture identifiers etc.
+    unitNumber = (unitNumber + 1);
+    return unitNumber;
+}
+
+let gameEngine = {
+    initializers: {
+        'startNewGame': function(){
+        mainMenu.style.display = 'none'; //hides menu
+        document.getElementById('gameUI').style.display = 'block'; //shows in-game UI
+        setInterval(gameEngine.render.frame, 1000/30); //Starts game at 30 FPS
+        gameHasStarted = true;
         }
+    },
+    render: {
+        'frame': function(){
+            ctx.clearRect(0, 0, widthRes, heightRes);//clears frame
+            //draws background (placeholder)
+            drawFilledSquare({ctx: ctx, x: 0, y: 1080, height: 500, width: 1920, color: "green",});
+            drawFilledSquare({ctx: ctx, x: 0, y: 580, height: 580, width: 1920, color: "lightblue",});
 
-        switch(power){
-            case 1:
-            
-            break;
-            case 2:
+            //draws castle
+            gameEngine.castle.render();
+            /*
+            Manages enemy wave spawning
+            */
 
-            break;
+            //check if next wave is pressed, and check prepared units. Spawn accordingly.
+            if(gameEngine.waveManager.nextWavePressed === true){
+                gameEngine.waveManager.nextWavePressed = false;
+
+                //checks zombie1 cache
+                let preparedZ1 = gameEngine.waveManager.preparedUnits.zombie1;
+                console.log("prepared zombies : " + gameEngine.waveManager.preparedUnits.zombie1);
+                if(preparedZ1 > 0){
+                    for(i = 0; i < preparedZ1; i += 1){
+                        gameEngine.waveManager.liveUnits.zombie1[i] = new Zombie(ctx, 1, 0 + (i*100), 850 - randomNumber(350), createID());
+                        gameEngine.waveManager.liveUnits.zombie1[i].spawn();
+                        gameEngine.waveManager.preparedUnits.zombie1 -= 1;
+                    }
+                }
+            }
+
+            if(gameEngine.waveManager.liveUnits.zombie1.length >= 1){
+                for(y = 0; y < gameEngine.waveManager.liveUnits.zombie1.length; y += 1){
+                    if(gameEngine.waveManager.liveUnits.zombie1[y]){
+                        if(gameEngine.waveManager.liveUnits.zombie1[y].health > 0){ 
+                            gameEngine.waveManager.liveUnits.zombie1[y].render();
+                        }
+                    }
+                }
+            }
+            /*
+            Development area
+            */
+
+            //draws screen-frame
+            drawSquare({ctx: ctx, x: 0, y: 0, height: heightRes, width: widthRes, color: "black",});
+            //draws castle hitbox
+            //drawSquare({ctx: ctx, x: 350, y: 1080, height: -heightRes, width: 1, color: "Red",});
+
+            /*
+            End of development area
+            */
+
+            //draw player attack animations
+            if(click === true && gameHasStarted === true && gameEngine.player.attackActive === false){
+                gameEngine.player.clickAniStep = gameEngine.player.attackDuration*30;
+                gameEngine.player.maxSteps = 90/gameEngine.player.clickAniStep; //maxsteps used for animationscaling so weapons always move 90 degrees.
+                gameEngine.player.attackCoordinates[0] = Number(mX) - 120;
+                gameEngine.player.attackCoordinates[1] = Number(mY) - 76;
+                gameEngine.player.attackActive = true;
+            }
+            if(gameEngine.player.clickAniStep > 0){
+                drawRotatedImage(gameEngine.player.attackCoordinates[0], gameEngine.player.attackCoordinates[1], dagger1Txt, 180 - gameEngine.player.clickAniStep * gameEngine.player.maxSteps);
+                gameEngine.player.clickAniStep += -1;
+                if(gameEngine.player.clickAniStep < 1){
+                    gameEngine.player.attackActive = false;
+                    console.log('attack has ended');
+                }
+            }
+
+            //Resets necessary data before next frame
+            click = false;
         }
-
-    }
-
-    playSound = function(){
-        windSound.play();
-    }
-
-    soundInterval = 0;
-
-   vindStille = function(){
-    windSound.pause();
-    info.innerHTML = "Stille 0–0.2 m/s";
-    windSpeed = 0.1;
-    orkan = false;
-    clearInterval(soundInterval);
-    orkanMusic.pause();
-   }
-
-   lettBris = function(){
-    clearInterval(soundInterval);
-    windSound.pause();
-    info.innerHTML = "Lett Bris 3.4–5.4 m/s";
-    løvblåser(1);
-    windSpeed = 0.5;
-    orkan = false;
-    windSound.play();
-    soundInterval = setInterval(playSound, 30000);
-    orkanMusic.pause();
-   }
-
-   stivKuling = function(){
-    clearInterval(soundInterval);
-    windSound.pause();
-    info.innerHTML = "Stiv Kuling 13.9–17.1 m/s";
-    løvblåser(2);
-    windSpeed = 1;
-    orkan = false;
-    windSound.play();
-    soundInterval = setInterval(playSound, 30000);
-    orkanMusic.pause();
-   }
-
-refreshProgram = function(){
-    updateVariables();
-    renderFrame();
-}
-
-updateVariables = function(){
-    bladeRotation += windSpeed;
-}
-
-class NyanCat{
-	constructor(x,y){
-		// Bilen har modellnavn,farge og startposisjon posisjon.
-		this.x = x;
-		this.y = y;  
-	}
-	tegn(){ // Metode for å tegne
-        ctx.drawImage(nyanCat, this.x, this.y);
-	}
-	flytt(x, y){ // Metode for å beregne forflytning (vektor)
-		this.x = this.x + x;
-		this.y = this.y + y;
-	}
-	get posisjon(){ // En get metode leverer en verdi fra klassen, her en array
-		return [this.x,this.y];
-	}
-}
-
-renderFrame = function(){
-    if(orkan === true){
-        updateVariables();
-        drawbackground();
-        drawRotatedImage(500, 0, standard_bjoerk, bladeRotation);
-        drawHouse();
-        drawRotatedImage(700, 500, vindmolleStolpe, bladeRotation);
-        drawRotatedImage(701, 50, vindmolleBlad, bladeRotation);
-
-        nyanLeader.flytt(nyanLeaderSpeed, 0);
-        nyanLeader.tegn();
-        nyan1.flytt(nyan1speed, 0);
-        nyan1.tegn();
-        nyan2.flytt(nyan2Speed, 0);
-        nyan2.tegn();
-        nyan3.flytt(nyan3Speed, 0);
-        nyan3.tegn();
-        nyan4.flytt(nyan4Speed, 0);
-        nyan4.tegn();
-        nyan5.flytt(nyan5Speed, 0);
-        nyan5.tegn();
-        nyan6.flytt(nyan6Speed, 0);
-        nyan6.tegn();
-        nyan7.flytt(nyan7Speed, 0);
-        nyan7.tegn();
-        nyan8.flytt(nyan8Speed, 0);
-        nyan8.tegn();
-        nyan9.flytt(nyan9Speed, 0);
-        nyan9.tegn();
-
-        if (nyanLeader.x > 1000) {
-            nyanLeader.x = -12; 
-
-            nyanLeaderSpeed = nyanspeed * randomNumber(3, 1);
-            nyan1speed = nyanspeed * randomNumber(3, 1);
-            nyan2Speed = nyanspeed * randomNumber(3, 1);
-            nyan3Speed = nyanspeed * randomNumber(3, 1);
-            nyan4Speed = nyanspeed * randomNumber(3, 1);
-            nyan5Speed = nyanspeed * randomNumber(3, 1);
-            nyan6Speed = nyanspeed * randomNumber(3, 1);
-            nyan7Speed = nyanspeed * randomNumber(3, 1);
-            nyan8Speed = nyanspeed * randomNumber(3, 1);
-            nyan9Speed = nyanspeed * randomNumber(3, 1);
+    },
+    waveManager:{
+        'nextWavePressed': false,
+        'currentWaveDead': true,
+        'waveNumber': 0,
+        'nextWave': function(){
+            if(gameEngine.waveManager.currentWaveDead === true){
+                //prepares next wave, spawns units and sends them out according to a certain roadmap for that wave. Random y axis placements.
+                //delete previous wave data
+                texturePool.innerHTML = '';
+                gameEngine.waveManager.liveUnits.zombie1 = [];
+                gameEngine.waveManager.waveNumber += 1;
+                console.log('next wave coming in!' + ' Wave number ' + gameEngine.waveManager.waveNumber + '!');
+                gameEngine.waveManager.preparedUnits.zombie1 = gameEngine.waveManager.waveNumber;
+                gameEngine.waveManager.nextWavePressed = true;
+                unitNumber = 0;
+                document.getElementById('nextWave').style.backgroundColor = 'grey';
+                currentWaveDead = false;
+            }else{
+                //do nothing
+            }
+        },
+        'preparedUnits':{ //Cache of units to spawn! The render and wavemanager uses these to keep track of units left to create.
+            'zombie1': 0,
+        },
+        'liveUnits':{
+            'zombie1': [],
         }
-        if(nyan1.x > 1000) nyan1.x = -24;
-        if(nyan2.x > 1000) nyan2.x = -240;
-        if(nyan3.x > 1000) nyan3.x = -112;
-        if(nyan4.x > 1000) nyan4.x = -340;
-        if(nyan5.x > 1000) nyan5.x = -230;
-        if(nyan6.x > 1000) nyan6.x = -218;
-        if(nyan7.x > 1000) nyan7.x = -101;
-        if(nyan8.x > 1000) nyan8.x = -10;
-        if(nyan9.x > 1000) nyan9.x = -10;
-    }else{
-        drawbackground();
-        ctx.drawImage(standard_bjoerk,500,0);
-        drawHouse();
-        ctx.drawImage(vindmolleStolpe,700,50);
-        drawRotatedImage(701, 50, vindmolleBlad, bladeRotation);
+    },
+    player:{
+        'clickDamage': 1,
+        'clickAniStep': 0,
+        'maxSteps': 0, //maximum anisteps. Used for animation
+        'attackDuration': 1, //measured in seconds
+        'attackCoordinates': [],
+        'attackActive': false,
+        'chosenWeapon': 'dagger1', //default weapon
+        'unlockedWeapons': ['dagger1'],
+    },
+    castle:{
+        'hitpoints': 100,
+        'x': 0,
+        'y': 1080,
+        'height': 1080,
+        'width': 350 ,
+        'render': function(){
+            ctx.drawImage(document.getElementById('castleCoreTexture'), 220, 650); //Castlecore
+        }
     }
 }
 
-drawRotatedImage = function(x, y, obj, angle){
-    ctx.translate(x + obj.width/2, y + obj.height/2);
-    ctx.rotate(angle * Math.PI/180);
-    ctx.drawImage(obj, -obj.width/2, -obj.height/2);
-    ctx.rotate(- angle * Math.PI/180);
-    ctx.translate(-x - obj.width/2, - y - obj.height/2);
+class Zombie{
+	constructor(ctx,type,x,y, id){
+        this.type = type;
+		this.x = x + widthRes;
+        this.y = y;  
+        this.ctx = ctx;
+        //hitbox
+        this.width = 115;
+        this.height = 190;
+        //placeholder for animationInterval
+        this.alive = false;
+        this.aniStep = 0;
+        this.id = id;
+        this.unitName = 'zombie';
+        
+        //create unique texture resource in html
+        texturePool.innerHTML += '<img id ="z1WT' + this.id + '" src="resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk1.png" style = "display:none" alt="">';
+        if(this.type === 1){
+            this.health = 10;
+            this.movespeed = -1;
+            this.attackDamage = 1;
+        }else if(type === 2) {
+            this.health = 100;
+            this.movespeed = -2;
+            this.attackDamage = 2;
+        }else if(type === 3){
+            this.health = 1000;
+            this.movespeed = -0,5;
+            this.attackDamage = 3;
+        }
+        this.texture = document.getElementById('z1WT' + this.id);
+    }
+    spawn(){ // goes into a one time function
+        this.alive = true;
+        this.aniStep = randomNumber(29);
+        //console.log('spawned zombie:' + JSON.stringify(gameEngine.waveManager.liveUnits.zombie1[(this.id-1)]));
+    }
+    render(){
+        //animates using anistep and framerate.
+        if(this.aniStep <= 29){
+            this.aniStep += 1;
+        }
+        else{
+            this.aniStep = 0;
+        }
+        switch(this.aniStep) {
+                case 0:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk1.png';
+                break;
+                case 5:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk2.png';
+                break;
+                case 10:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk3.png';
+                break;
+                case 15:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk4.png';
+                break;
+                case 20:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk5.png';
+                break;
+                case 25:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk6.png';
+                break;
+                case -1:
+                document.getElementById('z1WT' + this.id).src = '';
+                break;
+            default:
+            //do nothing
+        }
+        this.texture = document.getElementById('z1WT' + this.id);
+        //checks if enemy is clicked during this frame
+        if(click === true && gameEngine.player.attackActive === false){
+            if(mX >= this.x && mX <= (this.x + this.width) && mY >= this.y && (mY <= this.y + this.height)){
+                this.health += -gameEngine.player.clickDamage;
+            }
+        }
+        if(this.x < 350){
+            this.movespeed = 0;
+            gameEngine.castle.hitpoints += -this.attackDamage/30
+            console.log(gameEngine.castle.hitpoints);
+            //animate attack
+        }
+        this.x = this.x + this.movespeed; //moves zombie
+        //checks if zombie is alive
+        if(this.health < 1){
+            this.deSpawn();
+        }else{
+            this.ctx.drawImage(this.texture, this.x, this.y);
+        }
+    }
+    deSpawn(){ //despawns object
+        this.alive = false;
+        this.texture = '';
+        this.aniStep = -1; //halts animation
+        let myId = this.id-1;
+        delete gameEngine.waveManager.liveUnits.zombie1[myId];
+        unitNumber -= 1;
+        //checks if current wave is dead (can be checked every second, or every time a unit dies)
+        if(unitNumber === 0){
+            document.getElementById('nextWave').style.backgroundColor = 'yellow';
+            currentWaveDead = true;
+        }
+    }
+    renderHitbox(){ //renders hitbox --- goes into rendering engine --- debugging purposes
+        drawSquare({ctx: ctx, x: this.x, y: this.y, height: this.height, width: this.width, color: "red",});
+    }
 }
 
-drawbackground = function(){ //draw Grass and sky
-    drawFilledSquare({
-        ctx: ctx,
-        x: 0,
-        y: 600,
-        height: 1000,
-        width: 1000,
-        color: "skyblue"
-    })
-    drawFilledCircle({
-    ctx: ctx,
-    x: 250,
-    y: 2000,
-    size: 1600,
-    color: "Green",
-    });
-}
-
-drawHouse = function(){ //draw House
-    drawFilledSquare({
-        ctx: ctx,
-        x: 100,
-        y: 500,
-        height: 250,
-        width: 500,
-        color: "rgb(153, 4, 21)",
-    });
-    drawFilledSquare({
-        ctx: ctx,
-        x: 150,
-        y: 400,
-        height: 80,
-        width: 80,
-        color: "#5496d8", 
-    })
-    drawFilledSquare({
-        ctx: ctx,
-        x: 350,
-        y: 400,
-        height: 80,
-        width: 80,
-        color: "#5496d8", 
-    })
-    drawFilledSquare({
-        ctx: ctx,
-        x: 480,
-        y: 500,
-        height: 160,
-        width: 80,
-        color: "rgb(102, 29, 29)",
-    })
-    drawFilledTriangle({
-        ctx: ctx,
-        x: 600,
-        y: 250,
-        height: -80,
-        width: -250,
-        color: "grey",
-    });
-    drawFilledTriangle({
-        ctx: ctx,
-        x: 100,
-        y: 250,
-        height: -80,
-        width: 250,
-        color: "grey",
-    });
-}
-
-superOrkan = function(){
-    console.log("lmaoo");
-    info.innerHTML = 'lmaoo';
-    windSpeed = 20;
-    orkan = true;
-    orkanMusic.play();
+class Orc extends Zombie{
+	constructor(ctx,type,x,y){
+        super(ctx, type, x, y);
+        this.width = 250;
+        this.height = 300;
+	}
 }

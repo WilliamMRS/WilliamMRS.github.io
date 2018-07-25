@@ -1,33 +1,36 @@
 <!DOCTYPE html>
     <head>
 		<meta charset="utf-8" />
-		<title> Index </title> 
-		<link rel="stylesheet" type="text/css" href="style.css" />
+		<title> Upgrade game </title> 
+		<link rel="stylesheet" type="text/css" href="index.css">
+		<link rel="shortcut icon" type="image/png" href="favicon.png"/>
 		<script src = "index.js"> </script>
-		<script src = "bibliotek/library.js"></script>
+		<script src = "openlib.js"> </script>
 	</head>
-	
-	<body>	
-		<audio id = 'windSound' src="Vedlegg_IT2_V17/sommervind.mp3"></audio>
-		<audio id = 'orkanMusic'src="Resources/orkan.mp3"></audio>
-		<img class = "imgFiles" src="Resources/style.png" alt="" id = "nyanCat">
-		<img class = "imgFiles" src="Resources/vindmolleStolpe.png" alt="" id = "vindmolleStolpe">
-		<img class = "imgFiles" src="Resources/vindmolleBlad.png" alt="" id = "vindmolleBlad">
-		<img class = "imgFiles" src="Resources/bjoerkblad.png" alt="" id = "bjoerkblad">
-		<img class = "imgFiles" src="Resources/bjoerkblad1.png" alt="" id = "bjoerkblad1">
-		<img class = "imgFiles" src="Resources/standard_bjoerk.png" alt="" id = "standard_bjoerk">
-
-		<div id = "canvasDIV">
-				<canvas id = "mainCanvas" height = "600px" width = "1000px"></canvas>
+	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3">
+	<body>
+		<div id = "mainContent">
+				<canvas id = "gameWindow"></canvas>
+					<div id = 'mainMenu'>
+						<ul style = "margin: 0px; padding: 0px;">
+							<button class="menuButton" onclick = "gameEngine.initializers.startNewGame();">New Game</button>
+							<button class="menuButton" style = "background-color: darkgrey; color: grey;">Resume</button>
+							<button class="menuButton" style = "background-color: darkgrey; color: grey;">Settings</button>
+							<button class="menuButton" style = "background-color: darkgrey; color: grey;">Credits</button>
+						</ul>
+					</div>
+					<div id = 'gameUI' style ='display:none'>
+							<button id="nextWave" onclick = "gameEngine.waveManager.nextWave();">Next Wave</button>
+					</div>
 		</div>
-		<div id = "Controls">
-			<button class="btn" onclick = "vindStille();">Stille</button>
-			<button class="btn" onclick = "lettBris();">Lett Bris</button>
-			<button class="btn" onclick = "stivKuling();">Stiv Kuling</button>
-			<p id = "info" class = "info">Stille 0–0.2 m/s</p>
-			<button class = "easteregg" onclick = "superOrkan();">Super Orkan</button>
-		</div>
+	</body>
 
-    </body>
-	
+	<div id = "texturePool">
+	</div>
+
+	<div id = "staticTexturePool">
+		<img id = "dagger1" style = "display:none" src="resources/Sprites/icons/daggers/PNG/daggers (1).png" alt="">
+
+		<img id = "castleCoreTexture" style = "display:none" src="resources/Sprites/buildings/castles-2d/png/1/Asset 21.png" alt="">
+	</div>
 </html>
