@@ -20,7 +20,7 @@ WELCOME BACK!
 
 Things to do:
 
-Attack, hurt and death animations for zombies1.
+add touch compatibility.
 
 Update User Interface. Shops, health bars, items, spells, wave numbers, upgrades, armor and weapons. 
 add medieval font to menu and UI.
@@ -38,6 +38,8 @@ First units are positioned in front of the castle with somewhere to see amount a
 Remember to reduce file size of sprites. Over 3GB right now. (now at 1.8GB reduce further)
 
 create new types of monsters and pre-sets for waves.
+
+create animation-engine for all possible animations, like running, attacking, getting hurt etc.
 
 */
 
@@ -59,7 +61,7 @@ function loadGame() {
     loadGameWindow();
 
     //activates mouse interactivity
-    window.onclick = function (e) {
+    window.onmousedown = function (e) {
         //scales mouse coords to know where on canvas resolution mouse was clicked
         widthScale = widthRes/gameWindow.getBoundingClientRect().width;
         heightScale = heightRes/gameWindow.getBoundingClientRect().height;
@@ -70,7 +72,7 @@ function loadGame() {
     };
     click = false;
     console.log('game loaded!');
-    console.log("Welcome inspect presser :) The newest version of the project with all its resources is avaliable at github.com/williammrs. Suggestions are welcome!");
+    console.log("Welcome inspector :) The newest version of the project with all its resources is avaliable at github.com/williammrs. Suggestions are welcome!");
 }
 window.onload = loadGame;
 
@@ -143,7 +145,7 @@ let gameEngine = {
             if(gameEngine.waveManager.liveUnits.zombie1.length >= 1){
                 for(y = 0; y < gameEngine.waveManager.liveUnits.zombie1.length; y += 1){
                     if(gameEngine.waveManager.liveUnits.zombie1[y]){
-                        if(gameEngine.waveManager.liveUnits.zombie1[y].health > 0){ 
+                        if(gameEngine.waveManager.liveUnits.zombie1[y].alive === true){ 
                             gameEngine.waveManager.liveUnits.zombie1[y].render();
                         }
                     }
@@ -271,12 +273,13 @@ class Zombie{
     }
     render(){
         //animates using anistep and framerate.
-        if(this.aniStep <= 29){
+        if(this.aniStep <= 69){ //plays walking animation
             this.aniStep += 1;
         }
-        else{
+        if(this.aniStep >= 30 && this.health >= 1){ //resets walking animation
             this.aniStep = 0;
         }
+
         switch(this.aniStep) {
                 case 0:
                 document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk1.png';
@@ -296,8 +299,34 @@ class Zombie{
                 case 25:
                 document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Walk6.png';
                 break;
-                case -1:
+                case 30:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead1.png';
+                break;
+                case 35:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead2.png';
+                break;
+                case 40:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead3.png';
+                break;
+                case 45:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead4.png';
+                break;
+                case 50:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead5.png';
+                break;
+                case 55:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead6.png';
+                break;
+                case 60:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead7.png';
+                break;
+                case 65:
+                document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead8.png';
+                break;
+                case 70:
                 document.getElementById('z1WT' + this.id).src = '';
+                this.alive = false;
+                this.deSpawn();
                 break;
             default:
             //do nothing
@@ -317,16 +346,13 @@ class Zombie{
         }
         this.x = this.x + this.movespeed; //moves zombie
         //checks if zombie is alive
-        if(this.health < 1){
-            this.deSpawn();
-        }else{
+        if(this.aniStep <= 69){
             this.ctx.drawImage(this.texture, this.x, this.y);
         }
     }
     deSpawn(){ //despawns object
-        this.alive = false;
         this.texture = '';
-        this.aniStep = -1; //halts animation
+        this.alive = false;
         let myId = this.id-1;
         delete gameEngine.waveManager.liveUnits.zombie1[myId];
         unitNumber -= 1;
