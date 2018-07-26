@@ -20,25 +20,24 @@ WELCOME BACK!
 
 Things to do:
 
-don't let new wave spawn until this one has died.
-
 Attack, hurt and death animations for zombies1.
 
-Update User Interface.
+Update User Interface. Shops, health bars, items, spells, wave numbers, upgrades, armor and weapons. 
+add medieval font to menu and UI.
 
 make castle modular and upgradeable. Build barracks and stuffs.
 
+make Zombie 2 and 3 appear at wave 5 and 10 respectively.
+
 Start working on being able to buy units yourself that protect the castle. - Barracks.
+
+Create rewards system for killing monsters. Usable in the shop.
 
 First units are positioned in front of the castle with somewhere to see amount and health up right. Knights.
 
-Remember to reduce file size of sprites. Over 3GB right now.
-
-add medieval font to menu and UI
+Remember to reduce file size of sprites. Over 3GB right now. (now at 1.8GB reduce further)
 
 create new types of monsters and pre-sets for waves.
-
-Create rewards system for killing monsters. Usable in the shop.
 
 */
 
@@ -176,7 +175,6 @@ let gameEngine = {
                 gameEngine.player.clickAniStep += -1;
                 if(gameEngine.player.clickAniStep < 1){
                     gameEngine.player.attackActive = false;
-                    console.log('attack has ended');
                 }
             }
 
@@ -186,10 +184,10 @@ let gameEngine = {
     },
     waveManager:{
         'nextWavePressed': false,
-        'currentWaveDead': true,
+        'allDead': true,
         'waveNumber': 0,
         'nextWave': function(){
-            if(gameEngine.waveManager.currentWaveDead === true){
+            if(gameEngine.waveManager.allDead === true && unitNumber === 0){
                 //prepares next wave, spawns units and sends them out according to a certain roadmap for that wave. Random y axis placements.
                 //delete previous wave data
                 texturePool.innerHTML = '';
@@ -200,7 +198,7 @@ let gameEngine = {
                 gameEngine.waveManager.nextWavePressed = true;
                 unitNumber = 0;
                 document.getElementById('nextWave').style.backgroundColor = 'grey';
-                currentWaveDead = false;
+                allDead = false;
             }else{
                 //do nothing
             }
@@ -216,7 +214,7 @@ let gameEngine = {
         'clickDamage': 1,
         'clickAniStep': 0,
         'maxSteps': 0, //maximum anisteps. Used for animation
-        'attackDuration': 1, //measured in seconds
+        'attackDuration': 0.4, //measured in seconds
         'attackCoordinates': [],
         'attackActive': false,
         'chosenWeapon': 'dagger1', //default weapon
@@ -333,9 +331,10 @@ class Zombie{
         delete gameEngine.waveManager.liveUnits.zombie1[myId];
         unitNumber -= 1;
         //checks if current wave is dead (can be checked every second, or every time a unit dies)
+        console.log(unitNumber);
         if(unitNumber === 0){
             document.getElementById('nextWave').style.backgroundColor = 'yellow';
-            currentWaveDead = true;
+            gameEngine.waveManager.allDead = true;
         }
     }
     renderHitbox(){ //renders hitbox --- goes into rendering engine --- debugging purposes
