@@ -68,8 +68,15 @@ function loadGame() {
         mX = (e.pageX * widthScale).toFixed(0);
         mY = (e.pageY * heightScale).toFixed(0);
         click = true;
-
     };
+    window.addEventListener('touchstart', function(){
+        //scales mouse coords to know where on canvas resolution mouse was clicked
+        widthScale = widthRes/gameWindow.getBoundingClientRect().width;
+        heightScale = heightRes/gameWindow.getBoundingClientRect().height;
+        mX = (e.pageX * widthScale).toFixed(0);
+        mY = (e.pageY * heightScale).toFixed(0);
+        click = true;
+    })
     click = false;
     console.log('game loaded!');
     console.log("Welcome inspector :) The newest version of the project with all its resources is avaliable at github.com/williammrs. Suggestions are welcome!");
@@ -273,7 +280,7 @@ class Zombie{
     }
     render(){
         //animates using anistep and framerate.
-        if(this.aniStep <= 69){ //plays walking animation
+        if(this.aniStep <= 89){ //plays walking animation
             this.aniStep += 1;
         }
         if(this.aniStep >= 30 && this.health >= 1){ //resets walking animation
@@ -303,6 +310,8 @@ class Zombie{
                 document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead1.png';
                 break;
                 case 35:
+                this.attackDamage = 0; //hinders zombies from doing any harm while dying
+                this.movespeed = 0;
                 document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead2.png';
                 break;
                 case 40:
@@ -323,7 +332,7 @@ class Zombie{
                 case 65:
                 document.getElementById('z1WT' + this.id).src = 'resources/Sprites/enemies/zombies/PNG/Zombie1/animation/Dead8.png';
                 break;
-                case 70:
+                case 90:
                 document.getElementById('z1WT' + this.id).src = '';
                 this.alive = false;
                 this.deSpawn();
@@ -346,7 +355,7 @@ class Zombie{
         }
         this.x = this.x + this.movespeed; //moves zombie
         //checks if zombie is alive
-        if(this.aniStep <= 69){
+        if(this.aniStep <= 89){
             this.ctx.drawImage(this.texture, this.x, this.y);
         }
     }
