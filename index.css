@@ -13,6 +13,12 @@ body {
 	background-color: rgba(169, 169, 169, 0.3);
 }
 
+#headerInformation{
+	margin: 0px;
+	padding: 0px;
+	color: white;
+}
+
 #title{
 	margin: 0px;
 	padding: 0px;
@@ -82,7 +88,7 @@ button:hover{
 	#footerInformation{
 		font-size: 2vh;
 	}
-	#title{
+	#headerInformation{
 		font-size: 2vh;
 	}
 }
