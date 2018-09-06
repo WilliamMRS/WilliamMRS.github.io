@@ -1,58 +1,63 @@
-body{
-    margin: 0px;
-    padding: 0px;
+body {
+	background-color: rgb(53, 53, 53);
+	font-family: sans-serif;
+	margin: 0px;
+	padding: 0px;
+	min-height: 100%;
 }
 
-#gameWindow{
-    margin: 0px;
-    padding: 0px;
-    z-index: 0;
-    width: 100%;
-    position: absolute;
+#mainHeader{
+	margin: 0px;
+	padding: 5px;
+	width: 100%;
+	background-color: rgba(169, 169, 169, 0.3);
 }
 
-#gameUI{
-    margin: 0px;
-    padding: 0px;
-    z-index: 0;
-    width: 100%;
-    position: absolute;
+#title{
+	margin: 0px;
+	padding: 0px;
+	color: white;
 }
 
-#nextWave{
-    margin: 6px;
-    margin-left: 12px;
-    font-size: 18px;
-    border-width: 4px;
-    border-left-color: silver;
-    border-top-color: silver;
-    border-right-color: lightgrey;
-    border-bottom-color: lightgrey;
-    background-color: yellow;
+#mainFooter{
+	position: fixed;
+	bottom: 0;
+	margin: 0px;
+	padding: 5px;
+	width: 100%;
+	background-color: rgba(169, 169, 169, 0.3);
 }
 
-#mainMenu{    
-    margin: 0px;
-    margin-left: auto;
-    margin-right: auto;
-    position: relative;
-    z-index: 1;
+
+#footerInformation{
+	color: white;
+	margin:0px;
+	padding:0px;
+	font-size: 12px;
 }
 
-.menuButton{
-    padding: 10px;
-    margin-bottom: 12px;
-    border-width: 8px;
-    border-left-color: silver;
-    border-top-color: silver;
-    border-right-color: lightgrey;
-    border-bottom-color: lightgrey;
-    font-size: 26px;
-    display: block;
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
+button{
+	padding: 5px;
+	background-color: rgb(20, 199, 20);
+	color: white;
+	border-radius: 5px;
+}
 
-    background-color: #E8A83C;
-    color: #1D0D10;
+button:hover{
+	background-color: rgb(16, 150, 16);
+}
+
+.mainContent{
+	position: relative;
+	margin-top: 20%;
+}
+
+.backgroundVideo{
+	z-index: -1;
+	object-fit: cover;
+	width: 100vw;
+	height: 100vh;
+	position: fixed;
+	top: 0;
+	left: 0;
 }

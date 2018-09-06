@@ -1,36 +1,33 @@
 <!DOCTYPE html>
     <head>
 		<meta charset="utf-8" />
-		<title> Upgrade game </title> 
-		<link rel="stylesheet" type="text/css" href="index.css">
+		<title> Min App </title> 
+		<link rel="stylesheet" type="text/css" href="index.css" />
 		<link rel="shortcut icon" type="image/png" href="favicon.png"/>
 		<script src = "index.js"> </script>
-		<script src = "openlib.js"> </script>
 	</head>
-	<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=3">
-	<body>
-		<div id = "mainContent">
-				<canvas id = "gameWindow"></canvas>
-					<div id = 'mainMenu'>
-						<ul style = "margin: 0px; padding: 0px;">
-							<button class="menuButton" onclick = "gameEngine.initializers.startNewGame();">New Game</button>
-							<button class="menuButton" style = "background-color: darkgrey; color: grey;">Resume</button>
-							<button class="menuButton" style = "background-color: darkgrey; color: grey;">Settings</button>
-							<button class="menuButton" style = "background-color: darkgrey; color: grey;">Credits</button>
-						</ul>
-					</div>
-					<div id = 'gameUI' style ='display:none'>
-							<button id="nextWave" onclick = "gameEngine.waveManager.nextWave();">Next Wave</button>
-					</div>
+	<body>	
+				<video class = "backgroundVideo" src="stockholm.mp4" autoplay="true" loop="true"></video>
+
+		<header id = "mainHeader">
+			<p id = "title" align = "center" style= "font-size: 10px"> Video of Stockholm at Night - Courtesy of Pexels Videos </p>
+		</header>
+		<div class = "mainContent">
+			<h1 id = "title" align = "center">Welcome to williammrs.com</h1>
+			<h2 id = "title" align = "center">This site is under construction, and is scheduled to be completed</h2>
+			<h2 id = "title" align = "center">01.01.2019</h2>
+			<br>	
+			<h3 id = "title" align = "center">This will be the home of</h3>
+			<br>
+			<p id = "title" align = "center">(Alpha) Jibe - The Swimmer App</p>
+			<p id = "title" align = "center">Development blog on Jibe and DTC</p>
+			<p id = "title" align = "center">Personal blog & videos</p>
+			<p></p>
 		</div>
-	</body>
-
-	<div id = "texturePool">
-	</div>
-
-	<div id = "staticTexturePool">
-		<img id = "dagger1" style = "display:none" src="resources/Sprites/icons/daggers/PNG/daggers (1).png" alt="">
-
-		<img id = "castleCoreTexture" style = "display:none" src="resources/Sprites/buildings/castles-2d/png/1/Asset 21.png" alt="">
-	</div>
+		
+		<footer id = "mainFooter">
+			<p align = "center" id = "footerInformation" style = "margin:0;"> &copy 'William M Schmidt' 2018</p>
+		</footer>
+		
+    </body>
 </html>
