@@ -68,6 +68,13 @@ button:hover{
 	left: 0;
 }
 
+@media screen and (orientation: landscape) and (max-height: 500px) and (max-Width: 900px){
+	.mainContent{
+		margin:3%;
+		margin-top: 10%;
+	}
+}
+
 @media screen and (orientation: portrait){
 	h1{
 		font-size: 3.8vh;
