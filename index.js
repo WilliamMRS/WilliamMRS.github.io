@@ -1,7 +1,7 @@
 /*jslint devel: true */
 
 function winInit() {
-    initialProgress = 22;
+    initialProgress = 43;
     counter = 0;
     progressText = document.getElementById("progressText");
 
