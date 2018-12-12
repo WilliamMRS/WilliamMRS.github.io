@@ -10,7 +10,6 @@ function winInit() {
     let progressCounter = 0;
 
     function loadAnimation() {
-        console.log("loading");
         if(initialProgress!==progressCounter){
             animationTimer = initialProgress/progressCounter;
         }else{
@@ -25,7 +24,6 @@ function winInit() {
             progressText.innerHTML = progressCounter + "%";
         }else{
             if(counter <= 4){
-                console.log(counter);
                 switch(counter) {
                     case 0:
                     progressText.innerHTML = progressCounter + "%";
